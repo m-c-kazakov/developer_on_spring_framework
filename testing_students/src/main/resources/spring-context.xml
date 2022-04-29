@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <bean id="fileReader" class="com.example.testing_students.FileReader">
+        <constructor-arg name="fileName" value="questions"/>
+    </bean>
+
+    <bean id="userInterface" class="com.example.testing_students.UserInterface">
+      <constructor-arg name="fileReader" ref="fileReader"/>
+    </bean>
+</beans>
