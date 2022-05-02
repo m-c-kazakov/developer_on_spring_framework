@@ -1,21 +1,25 @@
 package com.example.testing_students;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+@Service
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-@RequiredArgsConstructor
 public class FileReader {
-
+    // questions
     String fileName;
+
+    public FileReader(@Value("${fileName}") String fileName) {
+        this.fileName = fileName;
+    }
 
     @SneakyThrows
     public Map<String, String> read() {
