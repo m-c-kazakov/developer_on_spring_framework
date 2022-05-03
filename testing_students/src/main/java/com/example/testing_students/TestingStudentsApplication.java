@@ -10,21 +10,14 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 import java.io.File;
 import java.util.Scanner;
-@ComponentScan
-@Configuration
-@PropertySource("classpath:application.yml")
+@SpringBootApplication
 public class TestingStudentsApplication {
 
 	@SneakyThrows
 	public static void main(String[] args) {
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(TestingStudentsApplication.class);
+		ConfigurableApplicationContext context = SpringApplication.run(TestingStudentsApplication.class);
 		UserInterface bean = context.getBean(UserInterface.class);
 		bean.execute();
-	}
-
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-		return new PropertySourcesPlaceholderConfigurer();
 	}
 
 }
