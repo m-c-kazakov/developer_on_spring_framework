@@ -11,8 +11,8 @@ public class TestingStudentsApplication {
 	@SneakyThrows
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(TestingStudentsApplication.class);
-		UserInterfaceImpl bean = context.getBean(UserInterfaceImpl.class);
-		bean.execute();
+//		UserInterfaceImpl bean = context.getBean(UserInterfaceImpl.class);
+//		bean.execute();
 	}
 
 }
