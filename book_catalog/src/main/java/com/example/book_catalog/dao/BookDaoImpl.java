@@ -30,7 +30,9 @@ public class BookDaoImpl implements BookDao {
         Map<String, ? extends Serializable> values = Map.of(
                 "NAME", book.getName(),
                 "AUTHOR_ID", book.getAuthorId(),
-                "GENRE_ID", book.getGenreId());
+                "GENRE_ID", book.getGenreId()
+        );
+
         jdbcOperations
                 .update("INSERT INTO BOOKS ( NAME, AUTHOR_ID, GENRE_ID ) VALUES(:NAME, :AUTHOR_ID, :GENRE_ID)",
                         new MapSqlParameterSource(values),
@@ -56,7 +58,7 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public List<Book> getAll() {
-        return jdbcOperations.query("SELECT id, name FROM BOOKS", new BookMapper());
+        return jdbcOperations.query("SELECT * FROM BOOKS", new BookMapper());
 
     }
 }

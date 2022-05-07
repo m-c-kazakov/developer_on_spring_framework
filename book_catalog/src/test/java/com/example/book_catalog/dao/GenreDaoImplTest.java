@@ -13,43 +13,38 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import static org.assertj.core.api.Assertions.*;
 
 @JdbcTest
-@Import(BookDaoImpl.class)
-class BookDaoImplTest {
+@Import(GenreDaoImpl.class)
+class GenreDaoImplTest {
 
-    public static final long EXIST_ID = 1L;
-    public static final String EXIST_NAME = "bookName";
+    private static final Long EXIST_ID = 1L;
+    private static final String EXIST_NAME = "the_first_genre";
     @Autowired
-    BookDaoImpl dao;
+    GenreDaoImpl dao;
 
     @Test
     void create() {
-
-        String bookName = RandomString.make();
-        Book book = Book.builder()
-                .name(bookName)
-                .author(Author.builder().id(1L).build())
-                .genre(Genre.builder().id(1L).build())
+        String genreName = RandomString.make();
+        Genre genre = Genre.builder()
+                .name(genreName)
                 .build();
-        long bookId = dao.create(book);
-        assertThat(dao.get(bookId)).extracting(Book::getName).isEqualTo(bookName);
+        long genreId = dao.create(genre);
+        assertThat(dao.get(genreId)).extracting(Genre::getName).isEqualTo(genreName);
     }
 
     @Test
     void update() {
-
-        Book bookWithAnUglyTitle = dao.get(EXIST_ID);
-        String newBookName = "this_name_is_better";
-        dao.update(bookWithAnUglyTitle.withName(newBookName));
-        assertThat(dao.get(EXIST_ID)).extracting(Book::getName).isEqualTo(newBookName);
+        Genre genreWithAnUglyTitle = dao.get(EXIST_ID);
+        String newGenreName = "this_name_is_better";
+        dao.update(genreWithAnUglyTitle.withName(newGenreName));
+        assertThat(dao.get(EXIST_ID)).extracting(Genre::getName).isEqualTo(newGenreName);
     }
 
     @Test
     void remove() {
-
         assertThatCode(() -> dao.get(EXIST_ID))
                 .doesNotThrowAnyException();
 
-        dao.remove(Book.builder().id(EXIST_ID).build());
+        dao.remove(Genre.builder().id(EXIST_ID).build());
 
         assertThatThrownBy(() -> dao.get(EXIST_ID))
                 .isInstanceOf(EmptyResultDataAccessException.class);
@@ -57,9 +52,7 @@ class BookDaoImplTest {
 
     @Test
     void get() {
-
-        assertThat(dao.get(EXIST_ID)).extracting(Book::getName).isEqualTo(EXIST_NAME);
-
+        assertThat(dao.get(EXIST_ID)).extracting(Genre::getName).isEqualTo(EXIST_NAME);
     }
 
     @Test
