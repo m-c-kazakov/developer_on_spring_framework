@@ -1,9 +1,9 @@
 package com.example.testing_students.config;
 
-import com.example.testing_students.FileReader;
-import com.example.testing_students.MessageGetter;
-import com.example.testing_students.MessageSender;
-import com.example.testing_students.UserInterfaceImpl;
+import com.example.testing_students.dao.FileReader;
+import com.example.testing_students.service.MessageGetter;
+import com.example.testing_students.service.MessageSender;
+import com.example.testing_students.service.UserInterfaceImpl;
 import org.apache.commons.lang3.LocaleUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;

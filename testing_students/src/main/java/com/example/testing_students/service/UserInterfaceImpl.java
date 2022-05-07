@@ -1,4 +1,4 @@
-package com.example.testing_students;
+package com.example.testing_students.service;
 
 
 import lombok.AccessLevel;
@@ -11,7 +11,6 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Scanner;
 
 @RequiredArgsConstructor
 @Scope(proxyMode = ScopedProxyMode.DEFAULT)
@@ -19,7 +18,7 @@ import java.util.Scanner;
 public class UserInterfaceImpl implements UserInterface {
 
     MessageSender messageSender;
-    
+
     MessageSource messageSource;
 
     Locale locale;
@@ -28,18 +27,23 @@ public class UserInterfaceImpl implements UserInterface {
     MessageGetter messageGetter;
 
     @Override
-    public void execute() {
+    public int execute() {
 
         messageSender.sendMessage(messageSource.getMessage("whatIsYourName", new String[]{}, locale));
         String userName = messageGetter.getMessage();
+        int result = 0;
         for (Entry<String, String> entry : questionAndAnswerMap.entrySet()) {
-            messageSender.sendMessage(messageSource.getMessage("question", new String[]{}, locale)+ entry.getKey());
+            messageSender.sendMessage(messageSource.getMessage("question", new String[]{}, locale) + entry.getKey());
             messageSender.sendMessage(messageSource.getMessage("yourAnswerOption", new String[]{}, locale));
             String answer = messageGetter.getMessage();
-            messageSender.sendMessage(messageSource.getMessage("rightAnswer", new String[]{}, locale)+ entry.getValue());
+            if (entry.getValue().equals(answer)) {
+                result++;
+            }
+            messageSender.sendMessage(
+                    messageSource.getMessage("rightAnswer", new String[]{}, locale) + entry.getValue());
         }
-        messageSender.sendMessage(messageSource.getMessage("end", new String[]{}, locale));
+        messageSender.sendMessage(messageSource.getMessage("end", new String[]{}, locale) + result);
 
-
+        return result;
     }
 }

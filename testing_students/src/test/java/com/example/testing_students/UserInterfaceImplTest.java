@@ -1,26 +1,24 @@
 package com.example.testing_students;
 
-import org.junit.jupiter.api.BeforeAll;
+import com.example.testing_students.service.MessageGetter;
+import com.example.testing_students.service.MessageSender;
+import com.example.testing_students.service.UserInterfaceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.MockBeans;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class UserInterfaceImplTest {
@@ -30,24 +28,19 @@ class UserInterfaceImplTest {
 
     @MockBean
     MessageSource messageSource;
-
-    Map<String, String> questionAndAnswerMap;
     @MockBean
     MessageGetter messageGetter;
 
-    @BeforeEach
-    void setUp() {
-        questionAndAnswerMap = new HashMap<>();
-        questionAndAnswerMap.put("Вопрос", "Ответ");
-    }
 
     @Test
     void execute() {
+        Map<String, String> questionAndAnswerMap = new HashMap<>();
+        String answer = "Ответ";
+        questionAndAnswerMap.put("Вопрос", answer);
+        when(messageGetter.getMessage()).thenReturn("Имя").thenReturn(answer);
         UserInterfaceImpl userInterface = new UserInterfaceImpl(messageSender, messageSource, Locale.US, questionAndAnswerMap, messageGetter);
-        userInterface.execute();
 
-//        verify(messageSender, times(5)).sendMessage(any());
-//        verify(messageGetter, times(2)).getMessage();
+        assertThat(userInterface.execute()).isEqualTo(1);
     }
 }
 
