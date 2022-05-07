@@ -1,4 +1,4 @@
-package com.example.testing_students;
+package com.example.testing_students.dao;
 
 import lombok.AccessLevel;
 import lombok.SneakyThrows;

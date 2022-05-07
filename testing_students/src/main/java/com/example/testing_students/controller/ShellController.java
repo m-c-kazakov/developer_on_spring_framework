@@ -1,5 +1,6 @@
-package com.example.testing_students;
+package com.example.testing_students.controller;
 
+import com.example.testing_students.service.UserInterface;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
