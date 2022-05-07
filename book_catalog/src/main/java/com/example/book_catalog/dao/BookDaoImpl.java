@@ -13,7 +13,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
@@ -47,6 +46,7 @@ public class BookDaoImpl implements BookDao {
         return jdbcOperations.queryForObject("SELECT * FROM BOOKS WHERE id = :id", Map.of("id", bookId), new BookMapper());
     }
 
+    @Override
     public List<Book> getAll() {
         return jdbcOperations.query("SELECT id, name FROM BOOKS", new BookMapper());
 
