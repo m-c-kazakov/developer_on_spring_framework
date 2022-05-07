@@ -1,0 +1,11 @@
+fileName: questions
+#language: en_US
+language: ru_RU
+
+spring:
+  main:
+    allow-circular-references: true
+#  shell:
+#    interactive:
+#      enabled: false
+
