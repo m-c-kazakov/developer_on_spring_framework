@@ -1,6 +1,8 @@
 package com.example.book_catalog.dao;
 
+import com.example.book_catalog.domain.Author;
 import com.example.book_catalog.domain.Book;
+import com.example.book_catalog.domain.Genre;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +25,11 @@ class BookDaoImplTest {
     void create() {
 
         String bookName = RandomString.make();
-        Book book = Book.builder().name(bookName).build();
+        Book book = Book.builder()
+                .name(bookName)
+                .author(Author.builder().id(1L).build())
+                .genre(Genre.builder().id(1L).build())
+                .build();
         long bookId = bookDao.create(book);
         assertThat(bookDao.get(bookId)).extracting(Book::getName).isEqualTo(bookName);
     }

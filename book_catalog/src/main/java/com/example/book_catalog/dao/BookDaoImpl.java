@@ -11,6 +11,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,14 @@ public class BookDaoImpl implements BookDao {
     @Override
     public long create(Book book) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcOperations.update("INSERT INTO BOOKS (name) VALUES(:name)", new MapSqlParameterSource(Map.of("name", book.getName())), keyHolder);
+        Map<String, ? extends Serializable> values = Map.of(
+                "NAME", book.getName(),
+                "AUTHOR_ID", book.getAuthorId(),
+                "GENRE_ID", book.getGenreId());
+        jdbcOperations
+                .update("INSERT INTO BOOKS ( NAME, AUTHOR_ID, GENRE_ID ) VALUES(:NAME, :AUTHOR_ID, :GENRE_ID)",
+                        new MapSqlParameterSource(values),
+                        keyHolder);
         return requireNonNull(keyHolder.getKey()).longValue();
     }
 
