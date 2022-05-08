@@ -10,9 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = BookServiceImpl.class)
@@ -25,7 +25,9 @@ class BookServiceImplTest {
 
     @Test
     void getALl() {
-        Book book = Book.builder().id(1L).name("BookName").build();
+        Book book = new Book();
+        book.setId(1L);
+        book.setName("BookName");
         Mockito.doReturn(List.of(book)).when(bookDao).getAll();
 
         assertThat(bookService.getALl()).hasSize(1).first().isEqualTo(book);
@@ -33,11 +35,22 @@ class BookServiceImplTest {
     }
 
     @Test
-    void getById() {
-        Book book = Book.builder().id(1L).name("BookName").build();
-        doReturn(book).when(bookDao).get(anyLong());
+    void getById$Success() {
+        Book book = new Book();
+        book.setId(1L);
+        book.setName("BookName");
+
+        doReturn(Optional.ofNullable(book)).when(bookDao).get(anyLong());
 
         assertThat(bookService.getById(anyLong())).usingRecursiveComparison().isEqualTo(book);
+        verify(bookDao, times(1)).get(anyLong());
+    }
+    @Test
+    void getById$Throw() {
+
+        doReturn(Optional.empty()).when(bookDao).get(anyLong());
+
+        assertThatThrownBy(() -> bookService.getById(anyLong())).isInstanceOf(RuntimeException.class);
         verify(bookDao, times(1)).get(anyLong());
     }
 

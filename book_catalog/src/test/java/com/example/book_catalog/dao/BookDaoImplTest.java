@@ -7,12 +7,13 @@ import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import static org.assertj.core.api.Assertions.*;
 
-@JdbcTest
+@DataJpaTest
 @Import(BookDaoImpl.class)
 class BookDaoImplTest {
 
@@ -25,40 +26,43 @@ class BookDaoImplTest {
     void create() {
 
         String bookName = RandomString.make();
-        Book book = Book.builder()
-                .name(bookName)
-                .author(Author.builder().id(1L).build())
-                .genre(Genre.builder().id(1L).build())
-                .build();
+        Book book = new Book();
+        book.setName(bookName);
+        Author author = new Author();
+        author.setName("asdf");
+        book.setAuthor(author);
+        Genre genre = new Genre();
+        genre.setName("asdf");
+        book.setGenre(genre);
+
+
+
         long bookId = dao.create(book);
-        assertThat(dao.get(bookId)).extracting(Book::getName).isEqualTo(bookName);
+        assertThat(dao.get(bookId)).isNotEmpty().get().extracting(Book::getName).isEqualTo(bookName);
     }
 
     @Test
     void update() {
 
-        Book bookWithAnUglyTitle = dao.get(EXIST_ID);
+        Book bookWithAnUglyTitle = dao.get(EXIST_ID).get();
         String newBookName = "this_name_is_better";
         dao.update(bookWithAnUglyTitle.withName(newBookName));
-        assertThat(dao.get(EXIST_ID)).extracting(Book::getName).isEqualTo(newBookName);
+        assertThat(dao.get(EXIST_ID)).isNotEmpty().get().extracting(Book::getName).isEqualTo(newBookName);
     }
 
     @Test
     void remove() {
 
-        assertThatCode(() -> dao.get(EXIST_ID))
-                .doesNotThrowAnyException();
+        Book book = dao.get(EXIST_ID).get();
+        dao.remove(book);
 
-        dao.remove(Book.builder().id(EXIST_ID).build());
-
-        assertThatThrownBy(() -> dao.get(EXIST_ID))
-                .isInstanceOf(EmptyResultDataAccessException.class);
+        assertThat(dao.get(EXIST_ID)).isEmpty();
     }
 
     @Test
     void get() {
 
-        assertThat(dao.get(EXIST_ID)).extracting(Book::getName).isEqualTo(EXIST_NAME);
+        assertThat(dao.get(EXIST_ID)).isNotEmpty().get().extracting(Book::getName).isEqualTo(EXIST_NAME);
 
     }
 

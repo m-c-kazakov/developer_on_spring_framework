@@ -7,12 +7,13 @@ import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import static org.assertj.core.api.Assertions.*;
 
-@JdbcTest
+@DataJpaTest
 @Import(GenreDaoImpl.class)
 class GenreDaoImplTest {
 
@@ -24,35 +25,35 @@ class GenreDaoImplTest {
     @Test
     void create() {
         String genreName = RandomString.make();
-        Genre genre = Genre.builder()
-                .name(genreName)
-                .build();
+
+        Genre genre = new Genre();
+        genre.setName(genreName);
+
         long genreId = dao.create(genre);
-        assertThat(dao.get(genreId)).extracting(Genre::getName).isEqualTo(genreName);
+        assertThat(dao.get(genreId)).isNotEmpty().get().extracting(Genre::getName).isEqualTo(genreName);
     }
 
     @Test
     void update() {
-        Genre genreWithAnUglyTitle = dao.get(EXIST_ID);
+        Genre genreWithAnUglyTitle = dao.get(EXIST_ID).get();
         String newGenreName = "this_name_is_better";
         dao.update(genreWithAnUglyTitle.withName(newGenreName));
-        assertThat(dao.get(EXIST_ID)).extracting(Genre::getName).isEqualTo(newGenreName);
+        assertThat(dao.get(EXIST_ID)).isNotEmpty().get().extracting(Genre::getName).isEqualTo(newGenreName);
     }
 
     @Test
     void remove() {
-        assertThatCode(() -> dao.get(EXIST_ID))
-                .doesNotThrowAnyException();
 
-        dao.remove(Genre.builder().id(EXIST_ID).build());
+        Genre genre = dao.get(EXIST_ID).get();
+        dao.remove(genre);
 
-        assertThatThrownBy(() -> dao.get(EXIST_ID))
-                .isInstanceOf(EmptyResultDataAccessException.class);
+        assertThat(dao.get(EXIST_ID)).isEmpty();
+
     }
 
     @Test
     void get() {
-        assertThat(dao.get(EXIST_ID)).extracting(Genre::getName).isEqualTo(EXIST_NAME);
+        assertThat(dao.get(EXIST_ID)).isNotEmpty().get().extracting(Genre::getName).isEqualTo(EXIST_NAME);
     }
 
     @Test

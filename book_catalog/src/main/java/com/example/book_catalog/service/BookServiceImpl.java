@@ -5,7 +5,9 @@ import com.example.book_catalog.domain.Book;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.remoting.RemoteTimeoutException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,27 +19,40 @@ public class BookServiceImpl implements BookService {
     BookDao bookDao;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Book> getALl() {
         return bookDao.getAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Book getById(Long booksId) {
-        return bookDao.get(booksId);
+        return bookDao.get(booksId).orElseThrow(() -> new RuntimeException(
+                String.format("Книги с Id=%d не существует.", booksId)));
     }
 
     @Override
+    @Transactional
     public Long create(String bookName) {
-        return bookDao.create(Book.builder().name(bookName).build());
+        Book book = new Book();
+        book.setName(bookName);
+        return bookDao.create(book);
     }
 
     @Override
+    @Transactional
     public void update(Long bookId, String bookName) {
-        bookDao.update(Book.builder().id(bookId).name(bookName).build());
+        Book book = new Book();
+        book.setId(bookId);
+        book.setName(bookName);
+        bookDao.update(book);
     }
 
     @Override
+    @Transactional
     public void remove(Long bookId) {
-        bookDao.remove(Book.builder().id(bookId).build());
+        Book book = new Book();
+        book.setId(bookId);
+        bookDao.remove(book);
     }
 }

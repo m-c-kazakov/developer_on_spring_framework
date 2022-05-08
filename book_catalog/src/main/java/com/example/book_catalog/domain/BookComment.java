@@ -4,20 +4,17 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Optional;
-
 
 @ToString
 @Getter
 @Setter
 @With
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "books")
+@Entity
+@Table(name = "book_comments")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Book {
+public class BookComment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,11 +22,6 @@ public class Book {
     @Column(name = "name")
     String name;
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "author_id")
-    Author author;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "genre_id")
-    Genre genre;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "book")
-    List<BookComment> bookComments;
+    @JoinColumn(name = "book_id")
+    Book book;
 }

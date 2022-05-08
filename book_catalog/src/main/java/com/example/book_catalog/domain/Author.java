@@ -17,7 +17,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Author {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;

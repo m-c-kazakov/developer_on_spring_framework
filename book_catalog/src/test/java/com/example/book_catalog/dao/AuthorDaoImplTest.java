@@ -5,12 +5,13 @@ import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import static org.assertj.core.api.Assertions.*;
 
-@JdbcTest
+@DataJpaTest
 @Import(AuthorDaoImpl.class)
 class AuthorDaoImplTest {
 
@@ -22,35 +23,33 @@ class AuthorDaoImplTest {
     @Test
     void create() {
         String authorName = RandomString.make();
-        Author author = Author.builder()
-                .name(authorName)
-                .build();
+        Author author = new Author();
+        author.setName(authorName);
+
         long authorId = dao.create(author);
-        assertThat(dao.get(authorId)).extracting(Author::getName).isEqualTo(authorName);
+        assertThat(dao.get(authorId)).isNotEmpty().get().extracting(Author::getName).isEqualTo(authorName);
     }
 
     @Test
     void update() {
-        Author authorWithAnUglyTitle = dao.get(EXIST_ID);
+        Author authorWithAnUglyTitle = dao.get(EXIST_ID).get();
         String newAuthorName = "this_name_is_better";
         dao.update(authorWithAnUglyTitle.withName(newAuthorName));
-        assertThat(dao.get(EXIST_ID)).extracting(Author::getName).isEqualTo(newAuthorName);
+        assertThat(dao.get(EXIST_ID)).isNotEmpty().get().extracting(Author::getName).isEqualTo(newAuthorName);
     }
 
     @Test
     void remove() {
-        assertThatCode(() -> dao.get(EXIST_ID))
-                .doesNotThrowAnyException();
+        Author author = dao.get(EXIST_ID).get();
 
-        dao.remove(Author.builder().id(EXIST_ID).build());
+        dao.remove(author);
 
-        assertThatThrownBy(() -> dao.get(EXIST_ID))
-                .isInstanceOf(EmptyResultDataAccessException.class);
+        assertThat(dao.get(EXIST_ID)).isEmpty();
     }
 
     @Test
     void get() {
-        assertThat(dao.get(EXIST_ID)).extracting(Author::getName).isEqualTo(EXIST_NAME);
+        assertThat(dao.get(EXIST_ID)).isNotEmpty().get().extracting(Author::getName).isEqualTo(EXIST_NAME);
     }
 
     @Test
