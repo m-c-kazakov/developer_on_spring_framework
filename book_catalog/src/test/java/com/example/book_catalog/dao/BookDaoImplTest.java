@@ -6,21 +6,17 @@ import com.example.book_catalog.domain.Genre;
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.dao.EmptyResultDataAccessException;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Import(BookDaoImpl.class)
 class BookDaoImplTest {
 
     public static final long EXIST_ID = 1L;
     public static final String EXIST_NAME = "bookName";
     @Autowired
-    BookDaoImpl dao;
+    BookDao dao;
 
     @Test
     void create() {
@@ -37,37 +33,38 @@ class BookDaoImplTest {
 
 
 
-        long bookId = dao.create(book);
-        assertThat(dao.get(bookId)).isNotEmpty().get().extracting(Book::getName).isEqualTo(bookName);
+        Book bookWithId = dao.saveAndFlush(book);
+        assertThat(dao.findById(bookWithId.getId())).isNotEmpty().get().extracting(Book::getName).isEqualTo(bookName);
     }
 
     @Test
     void update() {
 
-        Book bookWithAnUglyTitle = dao.get(EXIST_ID).get();
+        Book bookWithAnUglyTitle = dao.findById(EXIST_ID).get();
         String newBookName = "this_name_is_better";
-        dao.update(bookWithAnUglyTitle.withName(newBookName));
-        assertThat(dao.get(EXIST_ID)).isNotEmpty().get().extracting(Book::getName).isEqualTo(newBookName);
+        bookWithAnUglyTitle.setName(newBookName);
+        dao.flush();
+        assertThat(dao.findById(EXIST_ID)).isNotEmpty().get().extracting(Book::getName).isEqualTo(newBookName);
     }
 
     @Test
     void remove() {
 
-        Book book = dao.get(EXIST_ID).get();
-        dao.remove(book);
+        Book book = dao.findById(EXIST_ID).get();
+        dao.delete(book);
 
-        assertThat(dao.get(EXIST_ID)).isEmpty();
+        assertThat(dao.existsById(EXIST_ID)).isFalse();
     }
 
     @Test
     void get() {
 
-        assertThat(dao.get(EXIST_ID)).isNotEmpty().get().extracting(Book::getName).isEqualTo(EXIST_NAME);
+        assertThat(dao.findById(EXIST_ID)).isNotEmpty().get().extracting(Book::getName).isEqualTo(EXIST_NAME);
 
     }
 
     @Test
     void getAll() {
-        assertThat(dao.getAll()).hasSize(1);
+        assertThat(dao.findAll()).hasSize(1);
     }
 }
