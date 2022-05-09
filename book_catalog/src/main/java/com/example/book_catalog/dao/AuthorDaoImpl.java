@@ -52,7 +52,7 @@ public class AuthorDaoImpl implements AuthorDao {
     @Override
     public Author get(Long authorId) {
 
-        return jdbcOperations.queryForObject("SELECT * FROM AUTHORS WHERE id = :id", Map.of("id", authorId), new AuthorMapper());
+        return jdbcOperations.queryForObject("SELECT id, name FROM AUTHORS WHERE id = :id", Map.of("id", authorId), new AuthorMapper());
     }
 
     @Override

@@ -53,12 +53,12 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public Book get(Long bookId) {
-        return jdbcOperations.queryForObject("SELECT * FROM BOOKS WHERE id = :id", Map.of("id", bookId), new BookMapper());
+        return jdbcOperations.queryForObject("SELECT id, name, author_id, genre_id FROM BOOKS WHERE id = :id", Map.of("id", bookId), new BookMapper());
     }
 
     @Override
     public List<Book> getAll() {
-        return jdbcOperations.query("SELECT * FROM BOOKS", new BookMapper());
+        return jdbcOperations.query("SELECT id, name, author_id, genre_id FROM BOOKS", new BookMapper());
 
     }
 }

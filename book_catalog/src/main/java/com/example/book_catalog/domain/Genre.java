@@ -5,7 +5,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
-@ToString
+@ToString(exclude = "books")
 @Getter
 @With
 @Builder

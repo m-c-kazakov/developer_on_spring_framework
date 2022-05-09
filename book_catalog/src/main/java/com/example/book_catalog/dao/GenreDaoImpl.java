@@ -48,7 +48,7 @@ public class GenreDaoImpl implements GenreDao {
     @Override
     public Genre get(Long genreId) {
 
-        return jdbcOperations.queryForObject("SELECT * FROM GENRES WHERE id = :id", Map.of("id", genreId), new GenreMapper());
+        return jdbcOperations.queryForObject("SELECT id, name FROM GENRES WHERE id = :id", Map.of("id", genreId), new GenreMapper());
     }
 
     @Override
