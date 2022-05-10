@@ -5,7 +5,7 @@ import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 
-@ToString
+@ToString(exclude = "book")
 @Getter
 @Setter
 @With
