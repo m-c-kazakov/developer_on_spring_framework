@@ -30,6 +30,6 @@ public class Book {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "genre_id")
     Genre genre;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "book")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "book")
     List<BookComment> bookComments;
 }
