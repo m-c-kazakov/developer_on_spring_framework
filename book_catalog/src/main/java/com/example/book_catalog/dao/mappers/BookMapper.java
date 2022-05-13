@@ -14,12 +14,20 @@ public class BookMapper implements RowMapper<Book> {
         long id = rs.getLong("id");
         String name = rs.getString("name");
         long authorId = rs.getLong("AUTHOR_ID");
+        String authorName = rs.getString("AUTHOR_NAME");
         long genreId = rs.getLong("GENRE_ID");
+        String genreName = rs.getString("GENRE_NAME");
         return Book.builder()
                 .id(id)
                 .name(name)
-                .author(Author.builder().id(authorId).build())
-                .genre(Genre.builder().id(genreId).build())
+                .author(Author.builder()
+                        .id(authorId)
+                        .name(authorName)
+                        .build())
+                .genre(Genre.builder()
+                        .id(genreId)
+                        .name(genreName)
+                        .build())
                 .build();
     }
 }
