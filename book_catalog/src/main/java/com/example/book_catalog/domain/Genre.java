@@ -22,6 +22,6 @@ public class Genre {
     Long id;
     @Column(name = "name")
     String name;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "genre")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "genre")
     List<Book> books;
 }

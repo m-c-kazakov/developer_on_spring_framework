@@ -22,6 +22,6 @@ public class Author {
     Long id;
     @Column(name = "name")
     String name;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "author")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "author")
     List<Book> books;
 }
