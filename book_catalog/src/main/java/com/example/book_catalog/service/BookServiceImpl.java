@@ -5,7 +5,6 @@ import com.example.book_catalog.domain.Book;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.remoting.RemoteTimeoutException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,10 +41,15 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public void update(Long bookId, String bookName) {
-        Book book = new Book();
-        book.setId(bookId);
-        book.setName(bookName);
-        bookDao.update(book);
+
+        bookDao.get(bookId)
+                .ifPresentOrElse(
+                        book -> book.setName(bookName),
+                        () -> {
+                            throw new RuntimeException(
+                                    String.format("Книги с Id=%d не существует.", bookId));
+                        }
+                );
     }
 
     @Override

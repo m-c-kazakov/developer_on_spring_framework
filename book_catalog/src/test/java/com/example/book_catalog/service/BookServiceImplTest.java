@@ -63,7 +63,12 @@ class BookServiceImplTest {
 
     @Test
     void update() {
-        doNothing().when(bookDao).update(any(Book.class));
+        Book book = new Book();
+        book.setId(1L);
+        book.setName("BookName");
+
+        doReturn(Optional.ofNullable(book)).when(bookDao).get(anyLong());
+
         assertThatCode(() -> bookService.update(anyLong(), "afd"))
                 .doesNotThrowAnyException();
     }
