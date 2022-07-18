@@ -21,7 +21,6 @@
     <modules>
         <module>testing_students</module>
         <module>book_catalog</module>
-        <module>8_book_catalog_with_mongoDb</module>
     </modules>
 
 
