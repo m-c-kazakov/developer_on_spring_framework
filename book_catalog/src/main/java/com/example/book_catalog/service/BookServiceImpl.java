@@ -18,13 +18,11 @@ public class BookServiceImpl implements BookService {
     BookDao bookDao;
 
     @Override
-    @Transactional(readOnly = true)
     public List<Book> getALl() {
         return bookDao.getAll();
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Book getById(Long booksId) {
         return bookDao.get(booksId).orElseThrow(() -> new RuntimeException(
                 String.format("Книги с Id=%d не существует.", booksId)));
