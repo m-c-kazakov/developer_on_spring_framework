@@ -1,4 +1,4 @@
-package com.otus.homework.book_catalog_with_mongodb.controller.integration.annotation
+package com.otus.homework.book_catalog_with_mongodb.integration.annotation
 
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles

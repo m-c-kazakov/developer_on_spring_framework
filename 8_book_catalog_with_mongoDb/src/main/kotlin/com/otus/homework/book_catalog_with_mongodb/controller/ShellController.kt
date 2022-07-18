@@ -4,9 +4,7 @@ import org.springframework.shell.standard.ShellComponent
 import org.springframework.shell.standard.ShellMethod
 
 @ShellComponent
-class ShellController(
-//    private val bookService: BookService
-) {
+class ShellController {
 
     @ShellMethod(value = "List all books.", key = ["books", "book list"])
     fun getAllBooks(): String = "bookService.getAll().view()"

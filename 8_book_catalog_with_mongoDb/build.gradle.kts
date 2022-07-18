@@ -23,8 +23,17 @@ dependencies {
     implementation("org.jline:jline-reader:3.21.0")
 
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-//    implementation("com.github.cloudyrock.mongock:mongock-spring-v5:4.3.8")
-//    implementation("com.github.cloudyrock.mongock:mongodb-springdata-v3-driver:4.3.8")
+    implementation("com.github.cloudyrock.mongock:mongock-spring-v5:4.3.8")
+    implementation("com.github.cloudyrock.mongock:mongodb-springdata-v3-driver:4.3.8")
+
+    implementation("org.slf4j:slf4j-api:1.7.36")
+    implementation("org.apache.logging.log4j:log4j-core:2.18.0")
+
+
+
+
+
+    testImplementation("org.testcontainers:mongodb:1.17.3")
 
 
 //    testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.4.6")
@@ -38,9 +47,9 @@ tasks.withType<KotlinCompile> {
     }
 }
 
-tasks.bootRun {
-    standardInput = System.`in`
-}
+//tasks.bootRun {
+//    standardInput = System.`in`
+//}
 
 tasks.withType<Test> {
     useJUnitPlatform()
