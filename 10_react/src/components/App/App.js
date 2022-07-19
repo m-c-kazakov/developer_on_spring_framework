@@ -1,6 +1,8 @@
 import './App.css';
 import React, {useState} from "react";
 import CustomInput from "../CustomInput/CustomInput";
+import CustomButton from "../CustomButton/CustomButton";
+import CustomTable from "../CustomTable/CustomTable";
 
 
 const initialValues = {
@@ -44,11 +46,11 @@ function App() {
 
     const handleCleanClick = () => setBookData(initialValues);
 
-    const handleRemoveClick = (id) => {
+    const handleRemoveClick = ({id}) => {
         setBooks(books.filter((book, bookId) => bookId !== id));
     }
 
-    const handleEditClick = (book, id) => {
+    const handleEditClick = ({book, id}) => {
         setBookData(book)
         setEditableBookData({
             isEdit: true,
@@ -68,38 +70,11 @@ function App() {
         <div className={"wrapper"}>
             <div className={"wrapper-content"}>
                 <div className={"table-data"}>
-                    <table>
-                        <tbody>
-                        <tr>
-                            <th>Id</th>
-                            <th>Name</th>
-                            <th>Author</th>
-                            <th>Genre</th>
-                            <th>Actions</th>
-                        </tr>
-                        {
-                            books.map((book, id) => (
-                                <tr key={id}>
-                                    {/*<td>{book.id}</td>*/}
-                                    <td>{id}</td>
-                                    <td>{book.name}</td>
-                                    <td>{book.author}</td>
-                                    <td>{book.genre}</td>
-                                    <td>
-                                        <div>
-                                            <button onClick={() => handleEditClick(book, id)}
-                                                    className={"edit-action"}>Edit
-                                            </button>
-                                            <button onClick={() => handleRemoveClick(id)}
-                                                    className={"delete-remove"}>Remove
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))
-                        }
-                        </tbody>
-                    </table>
+                    <CustomTable
+                        books={books}
+                        handleRemoveClick={handleRemoveClick}
+                        handleEditClick={handleEditClick}
+                    />
                 </div>
 
                 <div>
@@ -123,9 +98,15 @@ function App() {
                             fieldName={"genre"}
                         />
                         <div className={"buttons-wrapper"}>
-                            <button type={"reset"}>Clean</button>
-                            <button disabled={!isFilledFields}
-                                    type={"submit"}>{editableBookData.isEdit ? 'Update' : 'Save'}</button>
+                            <CustomButton
+                                label={"Clean"}
+                                type={"reset"}
+                            />
+                            <CustomButton
+                                label={editableBookData.isEdit ? 'Update' : 'Save'}
+                                disabled={!isFilledFields}
+                                type={"submit"}
+                            />
                         </div>
                     </form>
                 </div>
