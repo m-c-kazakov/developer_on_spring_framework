@@ -3,28 +3,59 @@ import React, {useState} from "react";
 import CustomInput from "../CustomInput/CustomInput";
 import CustomButton from "../CustomButton/CustomButton";
 import CustomTable from "../CustomTable/CustomTable";
+import axios from "axios";
 
 
 const initialValues = {
     id: '',
     name: '',
     author: '',
-    genre: ''
+    genre: '',
+    bookComments: []
 
 }
 
+const baseUrl = 'http://localhost:8081'
+
+const config = {
+    headers: {
+        'Content-Type': 'application/json'
+    }
+};
 
 function App() {
 
     const [bookData, setBookData] = useState(initialValues);
-    const [books, setBooks] = useState([])
+
+    const [books, setBooks] = useState(findAllBook())
     const [editableBookData, setEditableBookData] = useState({
         isEdit: false,
         bookId: null
     })
 
+    function findAllBook() {
+        let booksData = []
+        axios.get(baseUrl + '/api/v1/books', config)
+            .then(response => {
+                response.data
+                    .map((book) => responseMapToBookData(book))
+                    .forEach((book) => booksData.push(book))
+            });
+        return booksData;
+    }
+
 
     const isFilledFields = bookData.name && bookData.author && bookData.genre
+
+
+    const responseMapToBookData = (book)=> {
+        return {
+            id: book.id,
+            name: book.name,
+            author: book.author,
+            genre: book.genre
+        }
+    }
 
     const handleSubmitBook = (event) => {
         event.preventDefault();
@@ -38,7 +69,17 @@ function App() {
                     bookId: null
                 });
             } else {
-                setBooks(prevState => [...prevState, bookData]);
+
+                axios.post(baseUrl+'/api/v1/books', {
+                    name: bookData.name,
+                    author: bookData.author,
+                    genre: bookData.genre,
+                    bookComments: bookData.bookComments
+                }, config).then(response => {
+                    setBooks(prevState => [...prevState, responseMapToBookData(response.data)]);
+                })
+
+
             }
             setBookData(initialValues)
         }
@@ -46,15 +87,16 @@ function App() {
 
     const handleCleanClick = () => setBookData(initialValues);
 
-    const handleRemoveClick = ({id}) => {
-        setBooks(books.filter((book, bookId) => bookId !== id));
+    const handleRemoveClick = ({bookData}) => {
+        ax
+        setBooks(books.filter((book, bookId) => bookId !== bookData.id));
     }
 
-    const handleEditClick = ({book, id}) => {
+    const handleEditClick = ({book}) => {
         setBookData(book)
         setEditableBookData({
             isEdit: true,
-            bookId: id
+            bookId: book.id
         });
     };
 

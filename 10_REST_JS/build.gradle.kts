@@ -17,7 +17,9 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.springframework.boot:spring-boot-starter-web:2.7.1")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -54,4 +56,15 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = "com.otus.homework.book_catalog_with_mongodb.BookCatalogApplication"
+    }
+
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    configurations.runtimeClasspath.map { ::zipTree }
 }

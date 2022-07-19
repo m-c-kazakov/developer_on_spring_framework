@@ -14,9 +14,9 @@ th {
 }
 
 
-th:first-child {
-    min-width: 20px;
-}
+/*th:first-child {*/
+/*    min-width: 20px;*/
+/*}*/
 
 td {
     border: 1px solid grey;

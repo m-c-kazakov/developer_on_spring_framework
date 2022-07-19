@@ -23,10 +23,10 @@ const CustomTable = (
                 <th>Actions</th>
             </tr>
             {
-                books.map((book, id) => (
-                    <tr key={id}>
-                        {/*<td>{book.id}</td>*/}
-                        <td>{id}</td>
+                books.map((book) => (
+                    <tr key={book.id}>
+                        <td>{book.id}</td>
+                        {/*<td>{id}</td>*/}
                         <td>{book.name}</td>
                         <td>{book.author}</td>
                         <td>{book.genre}</td>
@@ -37,14 +37,14 @@ const CustomTable = (
                                     label={"Edit"}
                                     classNames={"edit-action"}
                                     handleClick={handleEditClick}
-                                    data={({id, book})}
+                                    data={({book})}
                                     type={"button"}
                                 />
                                 <CustomButton
                                     label={"Remove"}
                                     classNames={"delete-remove"}
                                     handleClick={handleRemoveClick}
-                                    data={({id})}
+                                    data={({book})}
                                     type={"button"}
                                 />
 

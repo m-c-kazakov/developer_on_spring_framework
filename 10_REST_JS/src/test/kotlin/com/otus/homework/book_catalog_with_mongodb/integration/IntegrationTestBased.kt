@@ -28,7 +28,8 @@ abstract class IntegrationTestBased{
 
         @DynamicPropertySource
         @JvmStatic
-        internal fun postgresProperties(registry: DynamicPropertyRegistry) {
+        internal fun properties(registry: DynamicPropertyRegistry) {
+            mutableMapOf<String, String>("asdf" to "afd")
             log.info("Установка свойств для тестового контейнера")
             registry.add("spring.data.mongodb.uri", container::getReplicaSetUrl)
         }
