@@ -87,9 +87,9 @@ function App() {
 
     const handleCleanClick = () => setBookData(initialValues);
 
-    const handleRemoveClick = ({bookData}) => {
-        ax
-        setBooks(books.filter((book, bookId) => bookId !== bookData.id));
+    const handleRemoveClick = (id) => {
+        axios.delete(baseUrl+'/api/v1/books/'+id)
+        setBooks(books.filter((book) => book.id !== id));
     }
 
     const handleEditClick = ({book}) => {
