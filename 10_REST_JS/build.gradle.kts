@@ -17,9 +17,10 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-web:2.7.1")
+
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.springframework.shell:spring-shell-starter:2.0.1.RELEASE")
     implementation("org.jline:jline-reader:3.21.0")
 
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")

@@ -4,6 +4,8 @@ import com.otus.homework.book_catalog_with_mongodb.dao.BookDao
 import com.otus.homework.book_catalog_with_mongodb.dto.BookDtoToCreate
 import com.otus.homework.book_catalog_with_mongodb.dto.BookDtoToUpdate
 import com.otus.homework.book_catalog_with_mongodb.model.*
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -16,6 +18,12 @@ class BookServiceImpl(
     @Transactional(readOnly = true)
     override fun findAll(): List<Book> {
         return bookDao.findAll()
+    }
+
+    @Transactional(readOnly = true)
+    override fun findAll(offset: Int, limit: Int): List<Book> {
+        val pageRequest = PageRequest.of(offset, limit, Sort.Direction.DESC, "id")
+        return bookDao.findAll(pageRequest).content
     }
 
     @Transactional(readOnly = true)
@@ -49,7 +57,7 @@ class BookServiceImpl(
         return bookDao.save(book)
     }
 
-    override fun deleteById(id: String) {
-        bookDao.deleteById(id)
+    override fun deleteById(id: String): Result<Unit> {
+        return Result.runCatching { bookDao.deleteById(id) }
     }
 }
