@@ -14,12 +14,12 @@ class BookServiceImpl(
 ) : BookService {
 
     @Transactional(readOnly = true)
-    override fun getAll(): List<Book> {
+    override fun findAll(): List<Book> {
         return bookDao.findAll()
     }
 
     @Transactional(readOnly = true)
-    override fun getById(id: String): Book {
+    override fun findById(id: String): Book {
         return bookDao
             .findById(id)
             .orElseThrow()
@@ -38,7 +38,7 @@ class BookServiceImpl(
     override fun update(dto: BookDtoToUpdate): Book {
 
 
-        val book = getById(dto.id).apply {
+        val book = findById(dto.id).apply {
             this.name = dto.name
             this.author = dto.author
             this.genre = dto.genre

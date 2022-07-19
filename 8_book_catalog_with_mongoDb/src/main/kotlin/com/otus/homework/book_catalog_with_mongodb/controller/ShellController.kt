@@ -1,35 +1,38 @@
 package com.otus.homework.book_catalog_with_mongodb.controller
 
+import com.otus.homework.book_catalog_with_mongodb.dto.BookDtoToCreate
+import com.otus.homework.book_catalog_with_mongodb.dto.BookDtoToUpdate
+import com.otus.homework.book_catalog_with_mongodb.model.Book
+import com.otus.homework.book_catalog_with_mongodb.service.BookService
 import org.springframework.shell.standard.ShellComponent
 import org.springframework.shell.standard.ShellMethod
+import org.springframework.shell.standard.ShellOption
 
 @ShellComponent
-class ShellController {
+class ShellController(val bookService: BookService) {
 
-    @ShellMethod(value = "List all books.", key = ["books", "book list"])
-    fun getAllBooks(): String = "bookService.getAll().view()"
+    @ShellMethod(key = ["getAllBook", "all"], value = "get all books")
+    fun getAllBook() : List<Book> {
+        return bookService.findAll()
+    }
 
-//    @get:ShellMethod(key = ["getAllBook", "all"], value = "get all books")
-//    val aLl: List<Any>
-//        get() = bookService.getALl()
-//
-//    @ShellMethod(key = ["getBookById", "gbbid"], value = "get book by id")
-//    fun getBookById(@ShellOption booksId: Long?): Book {
-//        return bookService.getById(booksId)
-//    }
-//
-//    @ShellMethod(key = ["createBook", "cb"], value = "create book")
-//    fun createBook(@ShellOption bookName: String?): Long {
-//        return bookService.create(bookName)
-//    }
-//
-//    @ShellMethod(key = ["updateBook", "ub"], value = "update book")
-//    fun updateBook(@ShellOption bookId: Long?, @ShellOption bookName: String?) {
-//        bookService.update(bookId, bookName)
-//    }
-//
-//    @ShellMethod(key = ["removeBook", "rb"], value = "remove book")
-//    fun remove(@ShellOption bookId: Long?) {
-//        bookService.remove(bookId)
-//    }
+    @ShellMethod(key = ["getBookById", "gbbid"], value = "get book by id")
+    fun getBookById(@ShellOption booksId: String): Book {
+        return bookService.findById(booksId)
+    }
+
+    @ShellMethod(key = ["createBook", "cb"], value = "create book")
+    fun createBook(@ShellOption book: BookDtoToCreate): Book {
+        return bookService.add(book)
+    }
+
+    @ShellMethod(key = ["updateBook", "ub"], value = "update book")
+    fun updateBook(@ShellOption  book: BookDtoToUpdate) {
+        bookService.update(book)
+    }
+
+    @ShellMethod(key = ["removeBook", "rb"], value = "remove book")
+    fun remove(@ShellOption bookId: String) {
+        bookService.deleteById(bookId)
+    }
 }

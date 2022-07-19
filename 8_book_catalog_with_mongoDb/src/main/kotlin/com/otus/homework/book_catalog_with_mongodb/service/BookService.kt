@@ -6,9 +6,9 @@ import com.otus.homework.book_catalog_with_mongodb.model.Book
 
 interface BookService {
 
-    fun getAll(): List<Book>
+    fun findAll(): List<Book>
 
-    fun getById(id: String): Book
+    fun findById(id: String): Book
 
     fun add(dto: BookDtoToCreate): Book
 

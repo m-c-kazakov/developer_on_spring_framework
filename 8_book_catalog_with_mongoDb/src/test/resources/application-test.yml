@@ -2,4 +2,3 @@ spring:
   shell:
     interactive:
       enabled: false
-  test.c
