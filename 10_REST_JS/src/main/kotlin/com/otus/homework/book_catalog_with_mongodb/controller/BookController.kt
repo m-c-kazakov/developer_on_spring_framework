@@ -55,6 +55,7 @@ class BookController(val bookService: BookService){
     fun deleteById(@PathVariable id: String): ResponseEntity<*> {
         log.info(">>DELETE: /api/v1/books/$id")
         val result = bookService.deleteById(id)
+        log.info("DELETE result: $result")
         return when {
             result.isSuccess -> ResponseEntity.ok()
             result.isFailure -> ResponseEntity.notFound()

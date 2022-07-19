@@ -44,7 +44,7 @@ const CustomTable = (
                                     label={"Remove"}
                                     classNames={"delete-remove"}
                                     handleClick={handleRemoveClick}
-                                    data={({book})}
+                                    data={(book.id)}
                                     type={"button"}
                                 />
 
