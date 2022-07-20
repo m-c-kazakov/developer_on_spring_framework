@@ -17,15 +17,15 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
 
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jline:jline-reader:3.21.0")
 
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("com.github.cloudyrock.mongock:mongock-spring-v5:4.3.8")
     implementation("com.github.cloudyrock.mongock:mongodb-springdata-v3-driver:4.3.8")
 
@@ -33,13 +33,7 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-core:2.18.0")
 
 
-
-
-
     testImplementation("org.testcontainers:mongodb:1.17.3")
-
-
-//    testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.4.6")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 

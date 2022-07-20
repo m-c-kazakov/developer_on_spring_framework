@@ -3,11 +3,12 @@ package com.otus.homework.book_catalog_with_mongodb.service
 import com.otus.homework.book_catalog_with_mongodb.dao.BookDao
 import com.otus.homework.book_catalog_with_mongodb.dto.BookDtoToCreate
 import com.otus.homework.book_catalog_with_mongodb.dto.BookDtoToUpdate
-import com.otus.homework.book_catalog_with_mongodb.model.*
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Sort
+import com.otus.homework.book_catalog_with_mongodb.model.Book
+import com.otus.homework.book_catalog_with_mongodb.model.book
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 @Service
 @Transactional
@@ -16,48 +17,46 @@ class BookServiceImpl(
 ) : BookService {
 
     @Transactional(readOnly = true)
-    override fun findAll(): List<Book> {
+    override fun findAll(): Flux<Book> {
         return bookDao.findAll()
     }
 
     @Transactional(readOnly = true)
-    override fun findAll(offset: Int, limit: Int): List<Book> {
-        val pageRequest = PageRequest.of(offset, limit, Sort.Direction.DESC, "id")
-        return bookDao.findAll(pageRequest).content
+    override fun findById(id: String): Mono<Book> {
+        return bookDao.findById(id)
     }
 
-    @Transactional(readOnly = true)
-    override fun findById(id: String): Book {
-        return bookDao
-            .findById(id)
-            .orElseThrow()
-    }
-
-    override fun add(dto: BookDtoToCreate): Book {
+    override fun add(dto: BookDtoToCreate): Mono<Book> {
         val book = book {
             bookName = dto.name
             author = dto.author
             genre = dto.genre
             bookComments = dto.bookComments
         }
+
         return bookDao.save(book)
     }
 
-    override fun update(dto: BookDtoToUpdate): Book {
+    override fun update(dto: BookDtoToUpdate): Mono<Book> {
 
+        return findById(dto.id)
+            .map {
+                it.apply {
+                    this.name = dto.name
+                    this.author = dto.author
+                    this.genre = dto.genre
+                    this.bookComments = listOf(dto.bookComments, it.bookComments)
+                        .flatten()
+                        .distinct()
+                }
+            }
+            .flatMap {
+                bookDao.save(it)
+            }
 
-        val book = findById(dto.id).apply {
-            this.name = dto.name
-            this.author = dto.author
-            this.genre = dto.genre
-            this.bookComments = listOf(dto.bookComments, this.bookComments)
-                .flatten()
-                .distinct()
-        }
-        return bookDao.save(book)
     }
 
-    override fun deleteById(id: String): Result<Unit> {
-        return Result.runCatching { bookDao.deleteById(id) }
+    override fun deleteById(id: String): Mono<Result<Unit>> {
+        return Mono.fromRunnable { Result.runCatching { bookDao.deleteById(id) } }
     }
 }

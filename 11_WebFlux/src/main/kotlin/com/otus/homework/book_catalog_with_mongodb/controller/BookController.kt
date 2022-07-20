@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import reactor.core.publisher.Mono
 
 
 @CrossOrigin
@@ -19,46 +20,48 @@ class BookController(val bookService: BookService){
 
 
     @GetMapping("/api/v1/books")
-    fun findAll(
-        @RequestParam(defaultValue = "0") offset: Int,
-        @RequestParam(defaultValue = "10") limit: Int,
-    ): List<BookDto> {
-        log.info(">>GET: /api/v1/books : offset=$offset, limit=$limit")
-
-        return bookService.findAll(offset, limit).map { mapTo(it)}
+    fun findAll(): Mono<List<BookDto>> {
+        log.info(">>GET: /api/v1/books")
+        return bookService
+            .findAll()
+            .map { mapTo(it) }
+            .collectList()
     }
 
     @GetMapping("/api/v1/books/{id}")
-    fun findById(@PathVariable id: String): BookDto {
+    fun findById(@PathVariable id: String): Mono<BookDto> {
         log.info(">>GET: /api/v1/books/$id")
-        return mapTo(bookService.findById(id))
+        return bookService
+            .findById(id)
+            .map { mapTo(it) }
     }
 
     @PostMapping("/api/v1/books")
     @ResponseStatus(HttpStatus.CREATED)
-    fun add(@RequestBody bookDtoToCreate: BookDtoToCreate): BookDto {
+    fun add(@RequestBody bookDtoToCreate: BookDtoToCreate): Mono<BookDto> {
         log.info(">>POST: /api/v1/books : $bookDtoToCreate")
-        return mapTo(bookService.add(bookDtoToCreate))
+        return bookService.add(bookDtoToCreate).map { mapTo(it) }
     }
 
     private fun mapTo(book: Book) =
         BookDto(book.id, book.name, book.author, book.genre, book.bookComments)
 
     @PutMapping("/api/v1/books")
-    fun update(@RequestBody bookDtoToUpdate: BookDtoToUpdate): BookDto {
+    fun update(@RequestBody bookDtoToUpdate: BookDtoToUpdate): Mono<BookDto> {
         log.info(">>PUT: /api/v1/books/ : $bookDtoToUpdate")
-        return mapTo(bookService.update(bookDtoToUpdate))
+        return bookService.update(bookDtoToUpdate).map { mapTo(it) }
     }
 
     @DeleteMapping("/api/v1/books/{id}")
-    fun deleteById(@PathVariable id: String): ResponseEntity<*> {
+    fun deleteById(@PathVariable id: String): Mono<ResponseEntity<*>> {
         log.info(">>DELETE: /api/v1/books/$id")
-        val result = bookService.deleteById(id)
-        log.info("DELETE result: $result")
-        return when {
-            result.isSuccess -> ResponseEntity.ok()
-            result.isFailure -> ResponseEntity.notFound()
-            else -> ResponseEntity.badRequest()
-        }.build<Nothing>()
+        return bookService.deleteById(id).map {
+            return@map when {
+                it.isSuccess -> ResponseEntity.ok()
+                it.isFailure -> ResponseEntity.notFound()
+                else -> ResponseEntity.badRequest()
+            }.build<Nothing>()
+        }
+
     }
 }
