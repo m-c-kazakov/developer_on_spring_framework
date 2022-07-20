@@ -37,7 +37,6 @@ class BookController(val bookService: BookService){
     @PostMapping("/api/v1/books")
     @ResponseStatus(HttpStatus.CREATED)
     fun add(@RequestBody bookDtoToCreate: BookDtoToCreate): BookDto {
-        // http://localhost:8081/
         log.info(">>POST: /api/v1/books : $bookDtoToCreate")
         return mapTo(bookService.add(bookDtoToCreate))
     }
@@ -45,7 +44,7 @@ class BookController(val bookService: BookService){
     private fun mapTo(book: Book) =
         BookDto(book.id, book.name, book.author, book.genre, book.bookComments)
 
-    @PutMapping("/api/v1/books/")
+    @PutMapping("/api/v1/books")
     fun update(@RequestBody bookDtoToUpdate: BookDtoToUpdate): BookDto {
         log.info(">>PUT: /api/v1/books/ : $bookDtoToUpdate")
         return mapTo(bookService.update(bookDtoToUpdate))

@@ -62,12 +62,21 @@ function App() {
         if (isFilledFields) {
             if (editableBookData.isEdit) {
                 const editedBooks = books;
-                editedBooks.splice(editableBookData.bookId, 1, bookData);
-                setBooks(editedBooks);
-                setEditableBookData({
-                    isEdit: false,
-                    bookId: null
-                });
+                const updateBookData = axios.put(baseUrl + '/api/v1/books', {
+                    id: bookData.id,
+                    name: bookData.name,
+                    author: bookData.author,
+                    genre: bookData.genre,
+                    bookComments: bookData.bookComments
+                }, config).then(response => {
+                    console.log(updateBookData);
+                    editedBooks.splice(editableBookData.bookId, 1, responseMapToBookData(response.data));
+                    setBooks(editedBooks);
+                    setEditableBookData({
+                        isEdit: false,
+                        bookId: null
+                    });
+                })
             } else {
 
                 axios.post(baseUrl+'/api/v1/books', {
