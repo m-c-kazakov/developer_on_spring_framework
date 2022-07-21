@@ -1,5 +1,0 @@
-package com.example.testing_students;
-
-public interface MessageGetter {
-    String getMessage();
-}
