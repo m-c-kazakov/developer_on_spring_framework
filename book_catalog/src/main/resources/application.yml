@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/book-catalog-db
+    username: user
+    password: parol
+    driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: always
+      schema-locations: schema.sql
+  main:
+    allow-circular-references: true
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+    show-sql: true
+    properties:
+      hibernate:
+      #format_sql: true
+  mvc:
+    format:
+      # Устанавливает формат для конвертации дат в формат iso
+      date: iso
