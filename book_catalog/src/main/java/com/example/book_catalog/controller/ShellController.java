@@ -1,6 +1,7 @@
 package com.example.book_catalog.controller;
 
 import com.example.book_catalog.domain.Book;
+import com.example.book_catalog.domain.BookComment;
 import com.example.book_catalog.service.BookService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,11 @@ public class ShellController {
     @ShellMethod(key = {"getBookById", "gbbid"}, value = "get book by id")
     public Book getBookById(@ShellOption Long booksId) {
         return bookService.getById(booksId);
+    }
+
+    @ShellMethod(key = {"getCommentsByBookId", "gc"}, value = "get comments by book id")
+    public List<BookComment> getCommentsByBookId(@ShellOption Long booksId) {
+        return bookService.getCommentsByBookId(booksId);
     }
 
     @ShellMethod(key = {"createBook", "cb"}, value = "create book")

@@ -12,6 +12,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "book_comments")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookComment {
@@ -21,7 +22,7 @@ public class BookComment {
     Long id;
     @Column(name = "name")
     String name;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "book_id")
     Book book;
 }

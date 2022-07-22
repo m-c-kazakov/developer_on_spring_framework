@@ -1,16 +1,13 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:postgresql://localhost:5433/book-catalog-db
+    username: user
+    password: parol
+    driver-class-name: org.postgresql.Driver
   sql:
     init:
       mode: always
-      data-locations: data.sql
       schema-locations: schema.sql
-  h2:
-    console:
-      path: /h2-console
-      settings:
-        web-allow-others: true
   main:
     allow-circular-references: true
   jpa:
@@ -22,3 +19,7 @@ spring:
     properties:
       hibernate:
       #format_sql: true
+  mvc:
+    format:
+      # Устанавливает формат для конвертации дат в формат iso
+      date: iso

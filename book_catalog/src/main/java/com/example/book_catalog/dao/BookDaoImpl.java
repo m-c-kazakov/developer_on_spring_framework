@@ -1,11 +1,11 @@
 package com.example.book_catalog.dao;
 
 import com.example.book_catalog.domain.Book;
-import com.example.book_catalog.domain.BookComment;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Component
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BookDaoImpl implements BookDao {
@@ -35,7 +36,7 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public void remove(Book book) {
-        em.remove(book);
+        this.get(book.getId()).ifPresent(em::remove);
     }
 
     @Override

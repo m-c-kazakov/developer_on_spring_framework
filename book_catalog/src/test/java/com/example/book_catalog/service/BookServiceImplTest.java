@@ -1,82 +1,125 @@
 package com.example.book_catalog.service;
 
-import com.example.book_catalog.dao.BookDao;
+import com.example.book_catalog.domain.Author;
 import com.example.book_catalog.domain.Book;
-import org.assertj.core.api.Assertions;
+import com.example.book_catalog.domain.BookComment;
+import com.example.book_catalog.domain.Genre;
+import com.example.book_catalog.intagration.IntegrationTestBased;
+import org.assertj.core.internal.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
-import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
-@SpringBootTest(classes = BookServiceImpl.class)
-class BookServiceImplTest {
+class BookServiceImplTest extends IntegrationTestBased {
 
     @Autowired
     BookServiceImpl bookService;
-    @MockBean
-    BookDao bookDao;
 
     @Test
     void getALl() {
+        String bookName = RandomString.make();
         Book book = new Book();
-        book.setId(1L);
-        book.setName("BookName");
-        Mockito.doReturn(List.of(book)).when(bookDao).getAll();
-
-        assertThat(bookService.getALl()).hasSize(1).first().isEqualTo(book);
-        verify(bookDao, times(1)).getAll();
+        book.setName(bookName);
+        Author author = new Author();
+        author.setName("asdf");
+        book.setAuthor(author);
+        Genre genre = new Genre();
+        genre.setName("asdf");
+        book.setGenre(genre);
+        book.setBookComments(List.of(BookComment.builder().name("adsf").book(book).build()));
+        Book entity = bookService.create(book);
+        book.setId(entity.getId());
+        assertThat(bookService.getALl()).isNotEmpty();
     }
 
-    @Test
-    void getById$Success() {
-        Book book = new Book();
-        book.setId(1L);
-        book.setName("BookName");
-
-        doReturn(Optional.ofNullable(book)).when(bookDao).get(anyLong());
-
-        assertThat(bookService.getById(anyLong())).usingRecursiveComparison().isEqualTo(book);
-        verify(bookDao, times(1)).get(anyLong());
-    }
-    @Test
-    void getById$Throw() {
-
-        doReturn(Optional.empty()).when(bookDao).get(anyLong());
-
-        assertThatThrownBy(() -> bookService.getById(anyLong())).isInstanceOf(RuntimeException.class);
-        verify(bookDao, times(1)).get(anyLong());
-    }
 
     @Test
     void create() {
-        doReturn(1L).when(bookDao).create(any(Book.class));
-        assertThat(bookService.create(anyString())).isEqualTo(1L);
-        verify(bookDao, times(1)).create(any(Book.class));
+        String bookName = RandomString.make();
+        Book book = new Book();
+        book.setName(bookName);
+        Author author = new Author();
+        author.setName("asdf");
+        book.setAuthor(author);
+        Genre genre = new Genre();
+        genre.setName("asdf");
+        book.setGenre(genre);
+        book.setBookComments(List.of(BookComment.builder().name("adsf").book(book).build()));
+        Book entity = bookService.create(book);
+        book.setId(entity.getId());
+        assertThat(bookService.getById(entity.getId())).isNotNull();
     }
 
     @Test
     void update() {
+        String bookName = RandomString.make();
         Book book = new Book();
-        book.setId(1L);
-        book.setName("BookName");
+        book.setName(bookName);
+        Author author = new Author();
+        author.setName("asdf");
+        book.setAuthor(author);
+        Genre genre = new Genre();
+        genre.setName("asdf");
+        book.setGenre(genre);
+        book.setBookComments(List.of(BookComment.builder().name("adsf").book(book).build()));
+        Book entity = bookService.create(book);
+        book.setId(entity.getId());
 
-        doReturn(Optional.ofNullable(book)).when(bookDao).get(anyLong());
 
-        assertThatCode(() -> bookService.update(anyLong(), "afd"))
-                .doesNotThrowAnyException();
+        String randomName = RandomString.make();
+        bookService.update(entity.getId(), randomName);
+
+
+        assertThat(bookService.getById(entity.getId())).isNotNull()
+                .extracting(Book::getName)
+                .isEqualTo(randomName);
     }
 
     @Test
     void remove() {
-        doNothing().when(bookDao).remove(any(Book.class));
-        assertThatCode(() -> bookService.remove(anyLong()))
+
+        String bookName = RandomString.make();
+        Book book = new Book();
+        book.setName(bookName);
+        Author author = new Author();
+        author.setName("asdf");
+        book.setAuthor(author);
+        Genre genre = new Genre();
+        genre.setName("asdf");
+        book.setGenre(genre);
+        book.setBookComments(List.of(BookComment.builder().name("adsf").book(book).build()));
+        Book entity = bookService.create(book);
+
+        assertThatCode(() -> bookService.remove(entity.getId()))
                 .doesNotThrowAnyException();
+    }
+
+    @Test
+    void getCommentsByBookId() {
+        String bookName = RandomString.make();
+        Book book = new Book();
+        book.setName(bookName);
+        Author author = new Author();
+        author.setName("asdf");
+        book.setAuthor(author);
+        Genre genre = new Genre();
+        genre.setName("asdf");
+        book.setGenre(genre);
+        String comment1 = RandomString.make();
+        String comment2 = RandomString.make();
+        book.setBookComments(List.of(
+                BookComment.builder().name(comment1).book(book).build(),
+                BookComment.builder().name(comment2).book(book).build()
+        ));
+        Book entity = bookService.create(book);
+
+        assertThat(bookService.getCommentsByBookId(entity.getId()))
+                .isNotEmpty()
+                .extracting(BookComment::getName)
+                .contains(comment1, comment2);
     }
 }
